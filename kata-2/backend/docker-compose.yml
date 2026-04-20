@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:latest
+    container_name: kata2_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: kata2_tasks
+    ports:
+      - "5432:5432"
