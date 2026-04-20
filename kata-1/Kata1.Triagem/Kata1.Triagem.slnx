@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Kata1.Triage.Tests/Kata1.Triage.Tests.csproj" />
+  <Project Path="Kata1.Triagem/Kata1.Triagem.csproj" />
+</Solution>
