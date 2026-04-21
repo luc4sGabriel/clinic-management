@@ -9,7 +9,41 @@
 
 ## No kata-4 obviamente utilizei python pela facilidade e por já ter conhecimento que tem bibliotecas prontas e muito recomendadas para o tratamento de dados e tarefas como a que foi pedida
 
-# Deixei instruções de como executar cada kata dentro de cada pasta , pra facilitar o entendimento e correção
+# Instruções para Rodar cada projeto:
+
+## Kata-1 -> 
+### 1. Navegue até a pasta do projeto:
+### cd kata-1/Kata1.Triagem/Kata1.Triagem
+### dotnet run
+### Pra analisar o codigo e estrutura abra o gerenciador de solucoes do visual studio
+
+---
+
+## Kata-2 ->
+### Backend:
+### cd kata-2/backend/
+### npm i 
+### docker compose up -d
+### npx prisma migrate dev
+### npm run dev
+
+### Frontend:
+### cd ..
+### cd kata-2/frontend/tasks-management/
+### npm i
+### npm run dev
+
+---
+
+## Kata-3 ->
+### (Este projeto contém apenas documentação em texto na pasta kata-3)
+
+---
+
+## Kata-4 ->
+### cd kata-4/
+### python pipeline.py
+
 
 # Comentários , vou separar por kata .. 
 
@@ -17,7 +51,7 @@
 ### Já tive experiência com C# , no desenvolvimento web , mas fazia muito tempo que não utilizava a linguagem . Até que foi rápido pra eu lembrar das sintaxes e usar das vantagens da linguagem (linq etc.) , tive mais dificuldade mesmo para configurar e aprender a usar o visual studio 😁 . Com mais tempo eu poderia fazer algo mais robusto , melhor organização de pastas , e escalar pra um serviço web com views pra completar a estrutura MVC
 
 ## kata-2
-### Com mais tempo eu manteria a arquitetura , aumentaria a cobertura de testes , sistema de login com JWT , mappers e presenters pra traduzir um objeto de domínio pra um objeto do banco e etc .. além de refinar melhor os requisitos funcionais e não funcionais do projeto, sinto que fui muito superficial mas foi pra ter tempo .. No front , eu separaria em mais componentes , pra deixar organizado , ainda vou tentar implementar isso antes do prazo de entrega , tem algumas alterações que ainda vou fazer no back-end antes.
+### Com mais tempo eu manteria a arquitetura , implementacao de logs e alguma lib que verifica a health do sistema, aumentaria a cobertura de testes , sistema de login com JWT , mappers e presenters pra traduzir um objeto de domínio pra um objeto do banco e etc , melhor tratamento de erros , validacao de entrada e saida com zod tambem , documentacao etc.. além de refinar melhor os requisitos funcionais e não funcionais do projeto, sinto que fui muito superficial mas foi pra ter tempo .. No front , eu separaria em mais componentes , pra deixar organizado , ainda vou tentar implementar isso antes do prazo de entrega , tem algumas alterações que ainda vou fazer no back-end antes.
 
 ## kata-3
 ### Não muito a comentar aqui , achei as perguntas bem pertinentes , e creio que respondi todas muito bem e do meu jeito 

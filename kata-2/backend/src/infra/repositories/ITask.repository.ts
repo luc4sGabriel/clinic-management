@@ -1,5 +1,5 @@
 import { Task } from '../../core/entities/task.entity.js';
-import type { TaskStatus } from '../../shared/types.js';
+import type { TaskStatus } from '../../shared/task.types.js';
 
 export interface ITaskRepository {
   create(task: Task): Promise<void>;

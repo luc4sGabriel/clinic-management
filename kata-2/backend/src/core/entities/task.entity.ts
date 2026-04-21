@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { ITaskProps, TaskStatus } from '../../shared/types.js';
+import type { ITaskProps, TaskStatus } from '../../shared/task.types.js';
 
 export class Task {
   private props: Required<ITaskProps>;

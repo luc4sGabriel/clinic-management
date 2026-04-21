@@ -1,9 +1,26 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import type { CreateTask } from '../../../core/use-cases/create-task.use-case.js';
 import type { ListTasks } from '../../../core/use-cases/list-tasks.use-case.js';
 import type { UpdateTask } from '../../../core/use-cases/update-task.use-case.js';
 import type { SoftDeleteTask } from '../../../core/use-cases/soft-delete-task.use-case.js';
-import type { TaskStatus } from '../../../shared/types.js';
+import {
+  CreateTaskBodySchema,
+  type CreateTaskBodyDTO,
+  DeleteTaskParamsSchema,
+  type DeleteTaskParamsDTO,
+  DeleteTaskResponseSchema,
+  type DeleteTaskResponseDTO,
+  ListTasksQuerySchema,
+  type ListTasksQueryDTO,
+  TaskListResponseSchema,
+  type TaskListResponseDTO,
+  TaskPropsSchema,
+  type TaskPropsDTO,
+  UpdateTaskBodySchema,
+  type UpdateTaskBodyDTO,
+  UpdateTaskParamsSchema,
+  type UpdateTaskParamsDTO,
+} from '../../../dtos/task.dto.js';
 
 export class TaskController {
   constructor(
@@ -13,39 +30,32 @@ export class TaskController {
     private softDeleteTask: SoftDeleteTask,
   ) {}
 
-  async handleCreate(req: Request, res: Response) {
+  async handleCreate(req: Request, res: Response, next: NextFunction) {
     try {
-      const { title, description } = req.body;
+      const { title, description }: CreateTaskBodyDTO = CreateTaskBodySchema.parse(req.body);
       const task = await this.createTask.execute({ title, description });
-      return res.status(201).json(task.toJSON());
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+      const response: TaskPropsDTO = TaskPropsSchema.parse(task);
+      return res.status(201).json(response);
+    } catch (error) {
+      return next(error);
     }
   }
 
-  async handleList(req: Request, res: Response) {
+  async handleList(req: Request, res: Response, next: NextFunction) {
     try {
-      const status = req.query.status as TaskStatus | undefined;
+      const { status }: ListTasksQueryDTO = ListTasksQuerySchema.parse(req.query);
       const tasks = await this.listTasks.execute(status ? { status } : {});
-      return res.status(200).json(tasks.map(task => task.toJSON()));
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+      const response: TaskListResponseDTO = TaskListResponseSchema.parse(tasks);
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
     }
   }
 
-  async handleUpdate(req: Request, res: Response) {
+  async handleUpdate(req: Request, res: Response, next: NextFunction) {
     try {
-      const idParam = req.params.id;
-      const id = Array.isArray(idParam) ? idParam[0] : idParam;
-
-      if (!id) {
-        return res.status(400).json({ error: 'Task id is required' });
-      }
-      const { title, description, status } = req.body as {
-        title?: string;
-        description?: string;
-        status?: TaskStatus;
-      };
+      const { id }: UpdateTaskParamsDTO = UpdateTaskParamsSchema.parse(req.params);
+      const { title, description, status }: UpdateTaskBodyDTO = UpdateTaskBodySchema.parse(req.body);
 
       const task = await this.updateTask.execute({
         id,
@@ -53,24 +63,21 @@ export class TaskController {
         ...(description !== undefined ? { description } : {}),
         ...(status !== undefined ? { status } : {}),
       });
-      return res.status(200).json(task.toJSON());
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+      const response: TaskPropsDTO = TaskPropsSchema.parse(task);
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
     }
   }
 
-  async handleDelete(req: Request, res: Response) {
+  async handleDelete(req: Request, res: Response, next: NextFunction) {
     try {
-      const idParam = req.params.id;
-      const id = Array.isArray(idParam) ? idParam[0] : idParam;
-
-      if (!id) {
-        return res.status(400).json({ error: 'Task id is required' });
-      }
-      const task = await this.softDeleteTask.execute({ id });
-      return res.status(200).json({ message: 'Task deleted successfully' });
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+      const { id }: DeleteTaskParamsDTO = DeleteTaskParamsSchema.parse(req.params);
+      await this.softDeleteTask.execute({ id });
+      const response: DeleteTaskResponseDTO = DeleteTaskResponseSchema.parse({ message: 'Task deleted successfully' });
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
     }
   }
 }

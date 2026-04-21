@@ -3,7 +3,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import * as pg from 'pg';
 import { Task } from '../../../core/entities/task.entity.js';
 import type { ITaskRepository } from '../ITask.repository.js';
-import type { TaskStatus } from '../../../shared/types.js';
+import type { TaskStatus } from '../../../shared/task.types.js';
 
 const connectionString =
   process.env.DATABASE_URL ??
