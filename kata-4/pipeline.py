@@ -31,20 +31,30 @@ def generate_mock_data():
 def run_pipeline():
     df_p, df_c, df_e = generate_mock_data()
 
+    # Faz o coerce na data pra ficar certinho
     df_p['data_pedido'] = pd.to_datetime(df_p['data_pedido'], errors='coerce')
+
+    # Converte o valor total pra float, tratando a vírgula como separador decimal
     df_p['valor_total'] = df_p['valor_total'].str.replace(',', '.').astype(float)
+
+    # Remove linhas com id_pedido ou valor_total faltando
     df_p = df_p.dropna(subset=['id_pedido', 'valor_total'])
 
+    # Normaliza a cidade (removendo acentos, convertendo para maiúsculas e removendo espaços) [diacrits]
     df_c['cidade_normalizada'] = df_c['cidade'].str.strip().str.normalize('NFKD')\
         .str.encode('ascii', errors='ignore').str.decode('utf-8').str.upper()
 
+    # Converte as datas de entrega e realizacao da entrega, tratando erros
     df_e['data_prevista'] = pd.to_datetime(df_e['data_prevista'], errors='coerce')
     df_e['data_realizada'] = pd.to_datetime(df_e['data_realizada'], errors='coerce')
 
+    # Realiza os merges para consolidar os dadosa
     df_consolidado = pd.merge(df_p, df_c, on='id_cliente', how='inner')
     
+    # Merge com entregas usando left join para manter todos os pedidos, mesmo os sem entrega
     df_consolidado = pd.merge(df_consolidado, df_e, on='id_pedido', how='left')
 
+    # Calcula o atraso em dias (data_realizada - data_prevista)
     df_consolidado['atraso_dias'] = (df_consolidado['data_realizada'] - df_consolidado['data_prevista']).dt.days
 
     colunas_finais = [

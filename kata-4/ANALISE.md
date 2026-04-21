@@ -1,34 +1,34 @@
 # Quais foram as principais decisões de tratamento que você tomou? (ex.: o que fazer com registros órfãos, como normalizar cidades)
 
-## Resposta: Optei por utilizar um inner join entre pedidos e clientes, e um left join entre esse resultado e entregas. Isso garante que não teremos um pedido sem cliente. IDs de entrega que não possuem correspondência em pedidos foram descartados, pois não há contexto de valor ou cliente para eles no relatório de performance. Para as cidades , utilizei a técnica de remoção de acentos via NFKD e conversão para maiúsculas (UPPER). Isso transforma "São Paulo" e "sao paulo" em "SAO PAULO", unificando a agregação.
+## Resposta: A estratégia principal foi o uso de joins: mandei um inner join entre pedidos e clientes e um left join com a tabela de entregas. A ideia aqui é garantir que nenhum pedido fique "voando" sem um cliente dono. No caso dos IDs de entrega que não batiam com nenhum pedido, preferi descartar, já que eles perdem o sentido (valor e contexto) pro relatório de performance. Para as cidades, dei uma limpada geral: usei o NFKD para tirar os acentos e joguei tudo pra maiúsculo (UPPER). Assim, "São Paulo" e "sao paulo" viram a mesma coisa e a conta fecha certinho na hora de agrupar.
 
---------------------------------------------------------------------------
+
 # Seu pipeline é idempotente? Ou seja, rodá-lo duas vezes produz o mesmo resultado? Justifique.
 
-## Resposta: Sim, o pipeline é idempotente. Como ele realiza leituras completas dos arquivos fonte e aplica transformações baseadas em regras lógicas fixas (e não em estados anteriores do banco de dados), rodá-lo uma ou dez vezes resultará sempre no mesmo arquivo CSV consolidado, assumindo que os dados de entrada não mudaram.
+## Resposta: Sim, o pipeline é totalmente idempotente. Ele trabalha lendo os arquivos fonte do zero e aplica regras lógicas que não dependem de nada que já aconteceu antes ou de estados de banco de dados. Então, não importa se você rodar uma ou dez vezes: se os dados de entrada forem os mesmos, o CSV final vai ser exatamente o mesmo, sem duplicar ou mudar nada.
 
---------------------------------------------------------------------------
+
 
 # Se esse pipeline fosse executado diariamente com arquivos de 10 milhões de linhas, o que você mudaria na abordagem?
 
-## Resposta: Para arquivos desse volume, eu alteraria a abordagem da seguinte forma:
+## Resposta: Com 10 milhões de linhas o buraco é mais embaixo e eu mudaria algumas coisas:
 
-## - Uso de Spark ou Dask: O Pandas carrega tudo na memória RAM. Para 10 milhões de linhas, a RAM poderia esgotar. O Spark processaria isso de forma distribuída.
+## - Uso de Spark ou Dask: O Pandas carrega tudo na RAM de uma vez, e com esse volume o sistema ia travar com certeza. O Spark resolveria isso processando em paralelo.
 
-## - Formato Parquet: Em vez de CSV, usaria Parquet para armazenamento intermediário, pois ele é compactado e colunar, acelerando muito a leitura.
+## - Formato Parquet: Abandonaria o CSV e usaria Parquet pros arquivos intermediários. Por ser colunar e compactado, ele é infinitamente mais rápido pra ler e escrever.
 
-## - Processamento em Batches: Se fosse obrigado a usar Python puro, leria o CSV em chunks (pedaços de 100k linhas) para não sobrecarregar o sistema.
+## - Processamento em Chunks: Se eu tivesse que me manter só no Python, a saída seria ler o CSV em pedaços (chunks de 100k linhas, por exemplo) pra conseguir processar sem estourar a memória da máquina.
 
---------------------------------------------------------------------------
+
 
 # Que testes você escreveria para garantir a qualidade das transformações?
 
-## Resposta: Para garantir a saúde dos dados, eu escreveria testes para validar:
+## Resposta: Pra dormir tranquilo e garantir que os dados estão certos, eu focaria nesses testes:
 
-## - Esquema (Schema): Garantir que a coluna valor_total é sempre numérica.
+## - Validação de Schema: Conferir se a coluna valor_total é realmente um número e não apareceu nenhuma string perdida lá.
 
-## - Integridade: Testar se não existem valores de atraso_dias positivos onde o status_entrega indica "entregue no prazo".
+## - Teste de Integridade: Cruzar os dados pra garantir que não tem nenhum "atraso positivo" em pedidos que o status tá marcado como "entregue no prazo".
 
-## - Nulos: Validar se colunas críticas como id_pedido possuem zero valores nulos após o processamento.
+## - Checagem de Nulos: Ver se colunas vitais, como o id_pedido, não ficaram com valores vazios depois que o processamento passou.
 
-## - Volume: Verificar se a soma dos valores totais no arquivo final bate com a soma do arquivo de origem (ajustada pelos filtros).
+## - Batimento de Volume: Um teste simples pra ver se o valor total somado no arquivo final bate com a soma do arquivo bruto que entrou (descontando o que foi filtrado).
