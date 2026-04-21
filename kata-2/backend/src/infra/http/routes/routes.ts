@@ -8,8 +8,7 @@ const taskController = makeTaskController();
 router.post('/tasks', (req, res) => taskController.handleCreate(req, res));
 router.get('/tasks', (req, res) => taskController.handleList(req, res));
 
-// Adicione aqui depois os métodos de update e delete
-// router.patch('/tasks/:id', (req, res) => taskController.handleUpdate(req, res));
-// router.delete('/tasks/:id', (req, res) => taskController.handleDelete(req, res));
+router.patch('/tasks/:id', (req, res) => taskController.handleUpdate(req, res));
+router.delete('/tasks/:id', (req, res) => taskController.handleDelete(req, res));
 
 export { router };

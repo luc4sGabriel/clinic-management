@@ -5,6 +5,7 @@ export interface ITaskProps {
     title: string;
     description: string;
     status: TaskStatus;
+    isDeleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

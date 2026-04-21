@@ -22,14 +22,20 @@ export class PrismaTaskRepository implements ITaskRepository {
 
   async findAll(status?: TaskStatus): Promise<Task[]> {
     const data = await prisma.task.findMany({
-      where: status ? { status } : {},
+      where: status ? { status, isDeleted: false } : { isDeleted: false },
     });
-    return data.map(item => new Task({ ...item, status: item.status as TaskStatus }));
+    return data.map(item => new Task({
+      ...item,
+      status: item.status as TaskStatus,
+      isDeleted: item.isDeleted,
+    }));
   }
 
   async findById(id: string): Promise<Task | null> {
     const data = await prisma.task.findUnique({ where: { id } });
-    return data ? new Task({ ...data, status: data.status as TaskStatus }) : null;
+    return data
+      ? new Task({ ...data, status: data.status as TaskStatus, isDeleted: data.isDeleted })
+      : null;
   }
 
   async update(task: Task): Promise<void> {

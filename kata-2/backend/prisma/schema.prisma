@@ -16,6 +16,7 @@ model Task {
   title       String
   description String
   status      String
+  isDeleted   Boolean  @default(false) @map("is_deleted")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
