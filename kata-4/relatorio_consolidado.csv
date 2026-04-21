@@ -1,4 +1,11 @@
 id_pedido,nome,cidade_normalizada,estado,valor_total,status,data_pedido,data_prevista,data_realizada,atraso_dias,status_entrega
 1,Ana Silva,SAO PAULO,SP,100.5,pago,2023-01-01,2023-01-05,2023-01-06,1.0,entregue
 2,Bruno Souza,SAO PAULO,SP,200.0,pago,,2023-01-05,2023-01-04,-1.0,entregue
-3,Carla Dias,CURITIBA,PR,150.0,pendente,,2023-01-05,,,em transito
+3,Carla Dias,CURITIBA,PR,150.0,pendente,2023-01-03,2023-01-10,,,em transito
+4,Diego Lima,RIO DE JANEIRO,RJ,320.0,pago,2023-01-04,2023-01-10,2023-01-12,2.0,entregue
+5,Ana Silva,SAO PAULO,SP,50.0,pago,2023-01-05,2023-01-12,2023-01-12,0.0,entregue
+6,Elena Rosa,SAO PAULO,SP,450.1,cancelado,2023-01-06,,,,
+7,Bruno Souza,SAO PAULO,SP,120.0,pago,2023-01-07,2023-01-15,2023-01-14,-1.0,entregue
+8,Fabio Junior,CURITIBA,PR,99.9,pago,2023-01-08,2023-01-15,2023-01-18,3.0,entregue
+9,Ana Silva,SAO PAULO,SP,210.0,pago,2023-01-09,,,,
+10,Gisele Bündchen,BELO HORIZONTE,MG,300.0,pago,2023-01-10,2023-01-20,2023-01-20,0.0,entregue
