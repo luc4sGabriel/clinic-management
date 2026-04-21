@@ -1,0 +1,4 @@
+id_pedido,nome,cidade_normalizada,estado,valor_total,status,data_pedido,data_prevista,data_realizada,atraso_dias,status_entrega
+1,Ana Silva,SAO PAULO,SP,100.5,pago,2023-01-01,2023-01-05,2023-01-06,1.0,entregue
+2,Bruno Souza,SAO PAULO,SP,200.0,pago,,2023-01-05,2023-01-04,-1.0,entregue
+3,Carla Dias,CURITIBA,PR,150.0,pendente,,2023-01-05,,,em transito
