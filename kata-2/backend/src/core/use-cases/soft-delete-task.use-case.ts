@@ -1,5 +1,6 @@
 import type { ITaskRepository } from '../../infra/repositories/ITask.repository.js';
-import type { Task } from '../entities/task.entity.js';
+import type { ITaskProps } from '../../shared/task.types.js';
+import { NotFoundError } from '../../errors/not-found-error.js';
 
 interface SoftDeleteTaskRequest {
   id: string;
@@ -8,11 +9,11 @@ interface SoftDeleteTaskRequest {
 export class SoftDeleteTask {
   constructor(private taskRepository: ITaskRepository) {}
 
-  async execute({ id }: SoftDeleteTaskRequest): Promise<Task> {
+  async execute({ id }: SoftDeleteTaskRequest): Promise<ITaskProps> {
     const task = await this.taskRepository.findById(id);
 
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task');
     }
 
     if (!task.isDeleted) {
@@ -20,6 +21,6 @@ export class SoftDeleteTask {
       await this.taskRepository.update(task);
     }
 
-    return task;
+    return task.toJSON();
   }
 }

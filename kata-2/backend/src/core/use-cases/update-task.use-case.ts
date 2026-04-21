@@ -1,6 +1,8 @@
-import type { TaskStatus } from '../../shared/types.js';
+import type { TaskStatus } from '../../shared/task.types.js';
+import type { ITaskProps } from '../../shared/task.types.js';
 import type { ITaskRepository } from '../../infra/repositories/ITask.repository.js';
-import type { Task } from '../entities/task.entity.js';
+import { NotFoundError } from '../../errors/not-found-error.js';
+import { BadRequestError } from '../../errors/bad-request-error.js';
 
 interface UpdateTaskRequest {
   id: string;
@@ -12,15 +14,15 @@ interface UpdateTaskRequest {
 export class UpdateTask {
   constructor(private taskRepository: ITaskRepository) {}
 
-  async execute({ id, title, description, status }: UpdateTaskRequest): Promise<Task> {
+  async execute({ id, title, description, status }: UpdateTaskRequest): Promise<ITaskProps> {
     const task = await this.taskRepository.findById(id);
 
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task');
     }
 
     if (task.isDeleted) {
-      throw new Error('Task is deleted');
+      throw new BadRequestError('Task is deleted');
     }
 
     if (title !== undefined) {
@@ -36,6 +38,6 @@ export class UpdateTask {
     }
 
     await this.taskRepository.update(task);
-    return task;
+    return task.toJSON();
   }
 }
