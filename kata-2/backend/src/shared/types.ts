@@ -1,11 +1,12 @@
-export type TaskStatus = 'pending' | 'in_progress' | 'completed';
+import type { z } from 'zod';
 
-export interface ITaskProps {
-    id?: string;
-    title: string;
-    description: string;
-    status: TaskStatus;
-    isDeleted?: boolean;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import {
+    TaskPropsSchema,
+    TaskStatusSchema,
+} from './dtos/task.dto.js';
+
+export const TaskStatus = TaskStatusSchema;
+export type TaskStatus = z.infer<typeof TaskStatusSchema>;
+
+export const TaskProps = TaskPropsSchema;
+export type ITaskProps = z.infer<typeof TaskPropsSchema>;
